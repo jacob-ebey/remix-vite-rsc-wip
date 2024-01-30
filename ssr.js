@@ -19,6 +19,21 @@ const remixHandler = createRequestHandler({
   build: viteDevServer
     ? () => viteDevServer.ssrLoadModule("virtual:remix/server-build")
     : await import("./build/server/index.js"),
+  callServer: async () => {
+		// TODO: Remix isn't handling non-response returns at the moment for
+		// loader / action results and needs to be updated to do so.
+    return {
+      type: "data",
+      data: "hello world",
+      statusCode: 200,
+      headers: new Headers(),
+    };
+  },
+  // callServer: viteDevServer
+  //   ? await import("@remix-run/dev").then(({ createCallViteRSCWorker }) =>
+  //       createCallViteRSCWorker()
+  //     )
+  //   : createCallRSCWorker(new URL("./build/server/index.js", import.meta.url)),
 });
 
 const app = express();
@@ -50,5 +65,5 @@ app.all("*", remixHandler);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () =>
-  console.log(`Express server listening at http://localhost:${port}`)
+  console.log(`Express ssr server listening at http://localhost:${port}`)
 );

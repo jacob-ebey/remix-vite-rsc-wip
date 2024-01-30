@@ -1,4 +1,5 @@
 import {
+  Link,
   Links,
   LiveReload,
   Meta,
@@ -6,6 +7,8 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+
+import { sayHello } from "./actions";
 
 export default function App() {
   return (
@@ -17,6 +20,12 @@ export default function App() {
         <Links />
       </head>
       <body>
+        <p>
+          <Link to="/">Home</Link> | <Link to="/about">About</Link>
+        </p>
+				<form action={sayHello}>
+					<button type="submit">Say Hello</button>
+				</form>
         <Outlet />
         <ScrollRestoration />
         <Scripts />
