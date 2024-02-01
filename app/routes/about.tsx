@@ -1,4 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -12,6 +13,9 @@ export function loader() {
 }
 
 export default function Index() {
+  const loaderData = useLoaderData();
+  console.log({ loaderData });
+
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
       <h1>About</h1>
