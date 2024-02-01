@@ -1,17 +1,36 @@
+import { createRSCRequestHandler } from "@remix-run/express";
+import { installGlobals } from "@remix-run/node";
+import compression from "compression";
 import express from "express";
-// @ts-expect-error - no types
-import RSDS from "@vinxi/react-server-dom-vite/server";
+import morgan from "morgan";
+
+process.env.RSC = "1";
+
+installGlobals();
+
+const viteDevServer =
+  process.env.NODE_ENV === "production"
+    ? undefined
+    : await import("vite").then((vite) =>
+        vite.createServer({
+          server: { middlewareMode: true },
+        })
+      );
+
+const remixHandler = createRSCRequestHandler({
+  build: viteDevServer
+    ? () => viteDevServer.ssrLoadModule("virtual:remix/server-build")
+    : await import("./build/server/index.js"),
+});
 
 const app = express();
 
-app.get("*", (req, res) => {
-  const data = (req.headers["routes"] || "")
-    .split(",")
-    .reduce((p, c) => Object.assign(p, { [c]: c }), {});
+app.use(compression());
 
-  const { pipe } = RSDS.renderToPipeableStream(data);
-  pipe(res);
-});
+app.use(morgan("tiny"));
+
+// handle RSC requests
+app.all("*", remixHandler);
 
 const port = process.env.PORT || 3001;
 app.listen(port, () =>

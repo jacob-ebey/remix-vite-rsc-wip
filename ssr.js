@@ -1,3 +1,5 @@
+import * as dns from "node:dns";
+
 import { createRequestHandler } from "@remix-run/express";
 import { installGlobals } from "@remix-run/node";
 import compression from "compression";
@@ -5,6 +7,8 @@ import express from "express";
 import morgan from "morgan";
 
 installGlobals();
+
+dns.setDefaultResultOrder("ipv4first");
 
 const viteDevServer =
   process.env.NODE_ENV === "production"

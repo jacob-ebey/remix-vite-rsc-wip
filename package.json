@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "remix vite:build",
-    "dev": "node ./ssr.js",
+    "dev:ssr": "node ./ssr.js",
     "lint": "biome check .",
     "format": "biome check . --apply",
     "start:ssr": "cross-env NODE_ENV=production node ./ssr.js",

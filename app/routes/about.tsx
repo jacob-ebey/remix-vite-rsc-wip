@@ -1,3 +1,4 @@
+import * as React from "react";
 import type { MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
@@ -8,17 +9,29 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+async function AsyncContent() {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  return <p>ASYNC RSC CONTENT!!!!</p>;
+}
+
 export function loader() {
-  return "about";
+  return (
+    <>
+      <p>STATIC RSC CONTENT FROM LOADER!!!!</p>
+      <React.Suspense fallback="Loading async content...">
+        <AsyncContent />
+      </React.Suspense>
+    </>
+  );
 }
 
 export default function Index() {
-  const loaderData = useLoaderData();
-  console.log({ loaderData });
+  const loaderData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
 
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
       <h1>About</h1>
+      {loaderData}
       <ul>
         <li>
           <a
